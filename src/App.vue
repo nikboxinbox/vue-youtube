@@ -8,7 +8,7 @@
 
 <script>
 import EmptyLayout from '@/layouts/EmptyLayout';
-import MainLayot from '@/layouts/MainLayot';
+import MainLayout from '@/layouts/MainLayout';
 export default {
   computed: {
     layout() {
