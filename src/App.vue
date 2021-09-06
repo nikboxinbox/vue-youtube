@@ -7,23 +7,23 @@
 </template>
 
 <script>
-import EmptyLayout from "@/layouts/EmptyLayout";
-import MainLayot from "@/layouts/MainLayot";
+import EmptyLayout from '@/layouts/EmptyLayout';
+import MainLayot from '@/layouts/MainLayot';
 export default {
   computed: {
     layout() {
-      console.log(this.$route.meta);
-      return "empty-layout";
+      return (this.$route.meta.layout || 'empty') + '-layout';
     },
   },
   components: {
     EmptyLayout,
-    MainLayot,
+    MainLayout,
   },
 };
 </script>
 
+
 <style lang="scss">
-@import "~materialize-css/dist/css/materialize.min.css";
-@import "assets/index.css";
+@import '~materialize-css/dist/css/materialize.min.css';
+@import 'assets/index.css';
 </style>
