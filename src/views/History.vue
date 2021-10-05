@@ -8,36 +8,47 @@
       <canvas></canvas>
     </div>
 
-    <section>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Сумма</th>
-            <th>Дата</th>
-            <th>Категория</th>
-            <th>Тип</th>
-            <th>Открыть</th>
-          </tr>
-        </thead>
+   <Loader v-if="loading" />   <!-- если loading: true , показываем лоадер -->
 
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>1212</td>
-            <td>12.12.32</td>
-            <td>name</td>
-            <td>
-              <span class="white-text badge red">Расход</span>
-            </td>
-            <td>
-              <button class="btn-small btn">
-                <i class="material-icons">open_in_new</i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+   <p class="center" v-else-if="!records.length">   <!--если массив records пуст то показываем эту запись -->
+      Записей пока нет.
+      <router-link to="/record">Добавьте первую</router-link>
+    </p>
+
+    <section v-else> <!--  если loading: false и массив records имеет записи то показываем данный section -->
+      <HistoryTable :records="records" /> <!-- Передаем в компонент HistoryTable records и именуем так же -->
     </section>
   </div>
 </template>
+
+<script>
+import HistoryTable from '@/components/HistoryTable'
+
+export default {
+  name: 'history',
+  data: () => ({
+    loading: true,
+    records: [],
+    categories: [],
+  }),
+  async mounted() {
+    // this.records = await this.$store.dispatch('fetchRecords')
+    const records = await this.$store.dispatch('fetchRecords');
+    this.categoires = await this.$store.dispatch('fetchCategories');
+    this.records = records.map((record) => { // на каждой итерации будем получать некоторый record из массива records
+      return {
+        ...record, // разворачивавем объект record и определяем для него необходимые нам поля ниже
+        categoryName: this.categoires.find((c) => c.id === record.categoryId) .title, //находим имя той категории чей id совпадает с id записи
+        typeClass: record.type === 'income' ? 'green' : 'red', // определяем тип приход (income) у нас или нет и прсваиваем значение 'green' или 'red',
+        typeText: record.type === 'income' ? 'Доход' : 'Расход' // Типы income/outcome это типы записи расход/приход которые выбирает пользоваетль радиокнопкой при создании записи
+       }; 
+    });
+    this.loading = false; //после получения и обработки данных убираем лоадинг
+  
+  },
+  
+  components: {
+    HistoryTable,
+  },
+};
+</script>
